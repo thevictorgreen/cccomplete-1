@@ -23,6 +23,12 @@ jobs:
       - run:
           name: List Files
           command: ls -la
+      - run:
+          name: Change Directory to src
+          command: cd src
+      - run:
+          name: Re-List Files
+          command: ls -la
 
 workflows:
   build-test-deploy:
