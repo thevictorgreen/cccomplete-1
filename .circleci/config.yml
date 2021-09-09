@@ -18,17 +18,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Print Working Directory
-          command: pwd
-      - run:
-          name: List Files
-          command: ls -la
-      - run:
-          name: Change Directory to src
-          command: cd src
-      - run:
-          name: Re-List Files
-          command: ls -la
+          name: Run main.py
+          command: python src/main.py
 
 workflows:
   build-test-deploy:
