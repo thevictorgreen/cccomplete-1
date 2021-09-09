@@ -28,7 +28,7 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: pip
-          pip-dependency-file: /home/circleci/cccomplete-1/requirements-dev.txt
+          pip-dependency-file: requirements-dev.txt
       - run:
           name: Run Python Linter
           command: pylint src/main.py
