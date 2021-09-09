@@ -1,0 +1,27 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@1.2
+
+executors:
+  base_image:
+    docker:
+      - image: cimg/base:stable
+  python_image:
+    docker:
+      - image: cimg/python:3.8
+
+jobs:
+  build:
+    working_directory: ~/cccomplete-1/src
+    executor: python_image
+    steps:
+      - checkout
+      - run:
+          name: Run main.py
+          command: python main.py
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - build
