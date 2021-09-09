@@ -30,7 +30,7 @@ jobs:
           pip-dependency-file: requirements-dev.txt
       - run:
           name: Run Python Linter
-          command: pylint src/main.py
+          command: pylint src/*.py
 
   unit-test-1:
     executor: python_image
@@ -43,6 +43,28 @@ jobs:
           name: Run Unit Test 1
           command: python tests/main-test.py
 
+  unit-test-2:
+    executor: python_image
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          pip-dependency-file: requirements-dev.txt
+      - run:
+          name: Run Unit Test 2
+          command: python tests/main-test.py
+
+  unit-test-3:
+    executor: python_image
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          pip-dependency-file: requirements-dev.txt
+      - run:
+          name: Run Unit Test 3
+          command: python tests/main-test.py
+
 workflows:
   build-lint-test:
     jobs:
@@ -51,5 +73,11 @@ workflows:
           requires:
             - build
       - unit-test-1:
+          requires:
+            - lint
+      - unit-test-2:
+          requires:
+            - lint
+      - unit-test-3:
           requires:
             - lint
