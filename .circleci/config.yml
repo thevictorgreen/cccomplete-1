@@ -29,12 +29,12 @@ jobs:
       - run:
           name: PWD and LS
           command: pwd && ls -la
-      #- python/install-packages:
-      #    pkg-manager: pip
-      #    pip-dependency-file: requirements-dev.txt
-      #- run:
-      #    name: Run Python Linter
-      #    command: pylint src/main.py
+      - python/install-packages:
+          pkg-manager: pip
+          pip-dependency-file: /home/circleci/cccomplete-1/requirements-dev.txt
+      - run:
+          name: Run Python Linter
+          command: pylint src/main.py
 
 workflows:
   build-lint:
