@@ -26,9 +26,6 @@ jobs:
     executor: python_image
     steps:
       - checkout
-      - run:
-          name: PWD and LS
-          command: pwd && ls -la
       - python/install-packages:
           pkg-manager: pip
           pip-dependency-file: /home/circleci/cccomplete-1/requirements-dev.txt
