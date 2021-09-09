@@ -13,7 +13,7 @@ executors:
 
 jobs:
   build:
-    working_directory: ~/cccomplete-1/src
+    working_directory: ~/cccomplete-1
     executor: python_image
     steps:
       - checkout
