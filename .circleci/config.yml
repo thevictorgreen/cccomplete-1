@@ -20,6 +20,9 @@ jobs:
       - run:
           name: Print Working Directory
           command: pwd
+      - run:
+          name: List Files
+          command: ls -la
 
 workflows:
   build-test-deploy:
