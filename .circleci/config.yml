@@ -22,7 +22,6 @@ jobs:
           command: python src/main.py
 
   lint:
-    working_directory: ~/cccomplete-1
     executor: python_image
     steps:
       - checkout
