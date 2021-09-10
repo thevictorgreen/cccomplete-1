@@ -98,28 +98,21 @@ workflows:
       - lint:
           requires:
             - build
-          filters:
-            branches:
-              only:
-                - feature/*
       - unit-test-1:
           requires:
             - lint
-          filters:
-            branches:
-              only:
-                - feature/*
       - unit-test-2:
           requires:
             - lint
-          filters:
-            branches:
-              only:
-                - feature/*
       - unit-test-3:
           requires:
             - lint
+  deploy-dev-stage-prod:
+    jobs:
+      - deploy-to-dockerhub:
           filters:
             branches:
               only:
-                - feature/*
+                - master
+                - staging
+                - develop
