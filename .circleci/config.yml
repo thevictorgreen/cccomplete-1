@@ -89,6 +89,20 @@ jobs:
       - build-and-scan-image/scan-image-by-trivy:
           tag: ${IMAGE_NAME}:$CIRCLE_SHA1
 
+  hadolint-dockerimage-scan:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - build-and-scan-image/build-image:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+          path: .
+      - build-and-scan-image/install-hadolint:
+          version: 2.5.0
+      - build-and-scan-image/scan-image-by-hadolint:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+          severity: ignore
+
   deploy-to-dockerhub:
     executor: docker_publisher
     steps:
@@ -134,12 +148,12 @@ workflows:
             - unit-test-1
             - unit-test-2
             - unit-test-3
-      - trivy-dockerimage-scan:
+      - hadolint-dockerimage-scan:
           requires:
             - dockerfile-lint
       - deploy-to-dockerhub:
           requires:
-            - trivy-dockerimage-scan
+            - hadolint-dockerimage-scan
           filters:
             branches:
               only:
