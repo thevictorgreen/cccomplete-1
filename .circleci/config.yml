@@ -76,7 +76,7 @@ jobs:
       - hadolint/install
       - hadolint/lint
 
-  dockerimage-scan:
+  trivy-dockerimage-scan:
     executor: docker_publisher
     steps:
       - checkout
@@ -134,12 +134,12 @@ workflows:
             - unit-test-1
             - unit-test-2
             - unit-test-3
-      - dockerimage-scan:
+      - trivy-dockerimage-scan:
           requires:
             - dockerfile-lint
       - deploy-to-dockerhub:
           requires:
-            - dockerimage-scan
+            - trivy-dockerimage-scan
           filters:
             branches:
               only:
