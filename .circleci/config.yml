@@ -80,6 +80,7 @@ jobs:
     executor: docker_publisher
     steps:
       - checkout
+      - setup_remote_docker
       - build-and-scan-image/build-image:
           tag: ${IMAGE_NAME}:$CIRCLE_SHA1
           path: .
