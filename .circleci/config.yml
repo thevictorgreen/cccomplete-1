@@ -2,6 +2,8 @@ version: 2.1
 
 orbs:
   python: circleci/python@1.2
+  hadolint: lansweeper/hadolint@0.0.4
+  build-and-scan-image: shibataka000/build-and-scan-image@0.0.2
 
 executors:
   docker_publisher:
@@ -23,7 +25,7 @@ jobs:
           name: Run main.py
           command: python src/main.py
 
-  lint:
+  python-lint:
     executor: python_image
     steps:
       - checkout
@@ -67,6 +69,52 @@ jobs:
           name: Run Unit Test 3
           command: python tests/main-test.py
 
+  dockerfile-lint:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - hadolint/install
+      - hadolint/lint
+
+  trivy-dockerimage-scan:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - build-and-scan-image/build-image:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+          path: .
+      - build-and-scan-image/install-trivy:
+          version: 0.18.3
+      - build-and-scan-image/scan-image-by-trivy:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+
+  hadolint-dockerimage-scan:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - build-and-scan-image/build-image:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+          path: .
+      - build-and-scan-image/install-hadolint:
+          version: 2.5.0
+      - build-and-scan-image/scan-image-by-hadolint:
+          severity: ignore
+
+  dockle-dockerimage-scan:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - build-and-scan-image/build-image:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+          path: .
+      - build-and-scan-image/install-dockle:
+          version: 0.3.15
+      - build-and-scan-image/scan-image-by-dockle:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+
   deploy-to-dockerhub:
     executor: docker_publisher
     steps:
@@ -95,23 +143,29 @@ workflows:
   build-lint-test-deploy:
     jobs:
       - build
-      - lint:
+      - python-lint:
           requires:
             - build
       - unit-test-1:
           requires:
-            - lint
+            - python-lint
       - unit-test-2:
           requires:
-            - lint
+            - python-lint
       - unit-test-3:
           requires:
-            - lint
-      - deploy-to-dockerhub:
+            - python-lint
+      - dockerfile-lint:
           requires:
             - unit-test-1
             - unit-test-2
             - unit-test-3
+      - dockle-dockerimage-scan:
+          requires:
+            - dockerfile-lint
+      - deploy-to-dockerhub:
+          requires:
+            - dockle-dockerimage-scan
           filters:
             branches:
               only:
