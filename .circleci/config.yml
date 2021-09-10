@@ -70,6 +70,7 @@ jobs:
           command: python tests/main-test.py
 
   dockerfile-lint:
+    executor: docker_publisher
     steps:
       - checkout
       - hadolint:
