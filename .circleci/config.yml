@@ -84,6 +84,8 @@ jobs:
       - build-and-scan-image/build-image:
           tag: ${IMAGE_NAME}:$CIRCLE_SHA1
           path: .
+      - build-and-scan-image/install-trivy:
+          version: 0.18.3
 
   deploy-to-dockerhub:
     executor: docker_publisher
