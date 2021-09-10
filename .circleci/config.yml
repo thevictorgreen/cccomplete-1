@@ -100,7 +100,20 @@ jobs:
       - build-and-scan-image/install-hadolint:
           version: 2.5.0
       - build-and-scan-image/scan-image-by-hadolint:
-          severity: warning
+          severity: ignore
+
+  dockle-dockerimage-scan:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - build-and-scan-image/build-image:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+          path: .
+      - build-and-scan-image/install-dockle:
+          version: 0.3.15
+      - build-and-scan-image/scan-image-by-dockle:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
 
   deploy-to-dockerhub:
     executor: docker_publisher
@@ -147,12 +160,12 @@ workflows:
             - unit-test-1
             - unit-test-2
             - unit-test-3
-      - hadolint-dockerimage-scan:
+      - dockle-dockerimage-scan:
           requires:
             - dockerfile-lint
       - deploy-to-dockerhub:
           requires:
-            - hadolint-dockerimage-scan
+            - dockle-dockerimage-scan
           filters:
             branches:
               only:
