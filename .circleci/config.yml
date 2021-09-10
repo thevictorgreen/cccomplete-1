@@ -4,7 +4,9 @@ orbs:
   python: circleci/python@1.2
 
 executors:
-  base_image:
+  docker_publisher:
+    environment:
+      IMAGE_NAME: vdigital/ccomplete-1
     docker:
       - image: cimg/base:stable
   python_image:
@@ -65,6 +67,30 @@ jobs:
           name: Run Unit Test 3
           command: python tests/main-test.py
 
+  deploy-to-dockerhub:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Login to Dockerhub
+          command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASSWORD}"
+      - run:
+          name: Build Docker Image
+          command: docker build -t ${IMAGE_NAME}:$CIRCLE_SHA1
+      - run:
+          name: Tag and Publish Image to DockerHub
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+              docker tag ${IMAGE_NAME}:$CIRCLE_SHA1 ${IMAGE_NAME}:stable-${CIRCLE_BUILD_NUM} && docker push ${IMAGE_NAME}:stable-${CIRCLE_BUILD_NUM}
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]
+            then
+              docker tag ${IMAGE_NAME}:$CIRCLE_SHA1 ${IMAGE_NAME}:staging-${CIRCLE_BUILD_NUM} && docker push ${IMAGE_NAME}:staging-${CIRCLE_BUILD_NUM}
+            else
+              docker tag ${IMAGE_NAME}:$CIRCLE_SHA1 ${IMAGE_NAME}:develop-${CIRCLE_BUILD_NUM} && docker push ${IMAGE_NAME}:develop-${CIRCLE_BUILD_NUM}
+            fi
+
 workflows:
   build-lint-test:
     jobs:
@@ -72,12 +98,28 @@ workflows:
       - lint:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - feature/*
       - unit-test-1:
           requires:
             - lint
+          filters:
+            branches:
+              only:
+                - feature/*
       - unit-test-2:
           requires:
             - lint
+          filters:
+            branches:
+              only:
+                - feature/*
       - unit-test-3:
           requires:
             - lint
+          filters:
+            branches:
+              only:
+                - feature/*
