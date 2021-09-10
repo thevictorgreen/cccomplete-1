@@ -25,7 +25,7 @@ jobs:
           name: Run main.py
           command: python src/main.py
 
-  lint:
+  python-lint:
     executor: python_image
     steps:
       - checkout
@@ -97,18 +97,18 @@ workflows:
   build-lint-test-deploy:
     jobs:
       - build
-      - lint:
+      - python-lint:
           requires:
             - build
       - unit-test-1:
           requires:
-            - lint
+            - python-lint
       - unit-test-2:
           requires:
-            - lint
+            - python-lint
       - unit-test-3:
           requires:
-            - lint
+            - python-lint
       - deploy-to-dockerhub:
           requires:
             - unit-test-1
