@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   python: circleci/python@1.2
   hadolint: lansweeper/hadolint@0.0.4
-  build-and-scan-image: shibataka000/build-and-scan-image@0.0.1
+  build-and-scan-image: shibataka000/build-and-scan-image@0.0.2
 
 executors:
   docker_publisher:
@@ -80,13 +80,9 @@ jobs:
     executor: docker_publisher
     steps:
       - checkout
-      - build-and-scan-image:
+      - build-and-scan-image/build-image:
           tag: ${IMAGE_NAME}:$CIRCLE_SHA1
           path: .
-          trivy-enable: true
-          trivy-version: 0.18.3
-          trivy-severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
-          trivy-vuln-type: os
 
   deploy-to-dockerhub:
     executor: docker_publisher
