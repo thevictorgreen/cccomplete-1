@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   python: circleci/python@1.2
   hadolint: lansweeper/hadolint@0.0.4
-  build-and-scan-image: shibataka000/build-and-scan-image@0.0.2
+  build-and-scan-image: shibataka000/build-and-scan-image@0.0.1
 
 executors:
   docker_publisher:
