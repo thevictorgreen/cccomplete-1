@@ -100,7 +100,7 @@ jobs:
       - build-and-scan-image/install-hadolint:
           version: 2.5.0
       - build-and-scan-image/scan-image-by-hadolint:
-          severity: info
+          severity: warning
 
   deploy-to-dockerhub:
     executor: docker_publisher
