@@ -133,9 +133,12 @@ workflows:
             - unit-test-1
             - unit-test-2
             - unit-test-3
-      - deploy-to-dockerhub:
+      - dockerimage-scan:
           requires:
             - dockerfile-lint
+      - deploy-to-dockerhub:
+          requires:
+            - dockerimage-scan
           filters:
             branches:
               only:
