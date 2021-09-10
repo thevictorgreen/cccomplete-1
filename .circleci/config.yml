@@ -101,25 +101,25 @@ workflows:
           filters:
             branches:
               only:
-                - feature/.*
+                - feature/*
       - unit-test-1:
           requires:
             - lint
           filters:
             branches:
               only:
-                - feature/.*
+                - feature/*
       - unit-test-2:
           requires:
             - lint
           filters:
             branches:
               only:
-                - feature/.*
+                - feature/*
       - unit-test-3:
           requires:
             - lint
           filters:
             branches:
               only:
-                - feature/.*
+                - feature/*
