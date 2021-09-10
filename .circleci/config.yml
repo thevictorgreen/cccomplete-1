@@ -77,7 +77,7 @@ jobs:
           command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASSWORD}"
       - run:
           name: Build Docker Image
-          command: docker build -t ${IMAGE_NAME}:$CIRCLE_SHA1
+          command: docker build -t ${IMAGE_NAME}:$CIRCLE_SHA1 .
       - run:
           name: Tag and Publish Image to DockerHub
           command: |
@@ -92,7 +92,7 @@ jobs:
             fi
 
 workflows:
-  build-lint-test:
+  build-lint-test-deploy:
     jobs:
       - build
       - lint:
@@ -107,9 +107,11 @@ workflows:
       - unit-test-3:
           requires:
             - lint
-  deploy-dev-stage-prod:
-    jobs:
       - deploy-to-dockerhub:
+          requires:
+            - unit-test-1
+            - unit-test-2
+            - unit-test-3
           filters:
             branches:
               only:
