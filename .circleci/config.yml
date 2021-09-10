@@ -76,6 +76,18 @@ jobs:
       - hadolint/install
       - hadolint/lint
 
+  dockerimage-scan:
+    executor: docker_publisher
+    steps:
+      - checkout
+      - build-and-scan-image:
+          tag: ${IMAGE_NAME}:$CIRCLE_SHA1
+          path: .
+          trivy-enable: true
+          trivy-version: 0.18.3
+          trivy-severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+          trivy-vuln-type: os
+
   deploy-to-dockerhub:
     executor: docker_publisher
     steps:
