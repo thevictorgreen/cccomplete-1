@@ -117,11 +117,14 @@ workflows:
       - unit-test-3:
           requires:
             - python-lint
-      - deploy-to-dockerhub:
+      - dockerfile-lint:
           requires:
             - unit-test-1
             - unit-test-2
             - unit-test-3
+      - deploy-to-dockerhub:
+          requires:
+            - dockerfile-lint
           filters:
             branches:
               only:
